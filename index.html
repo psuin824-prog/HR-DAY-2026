@@ -548,18 +548,22 @@ const SESSIONS = [
 ];
 
 function doGet(e){return handle(e)}
+function doPost(e){return handle(e)}
 function handle(e){
-  const cb=e.parameter.callback,a=e.parameter.action;
+  const p=e.parameter||{};
+  const cb=p.callback,a=p.action;
   let r;
   try{
-    if(a==='save'){r=save(e.parameter.name,JSON.parse(e.parameter.checks));updateSummary();}
-    else if(a==='load')r=load(e.parameter.name);
+    if(a==='save'){r=save(p.name,JSON.parse(p.checks));updateSummary();}
+    else if(a==='load')r=load(p.name);
     else if(a==='all')r=all();
     else r={ok:false,error:'unknown action'};
   }catch(err){r={ok:false,error:err.toString()};}
   const json=JSON.stringify(r);
-  if(cb)return ContentService.createTextOutput(cb+'('+json+')').setMimeType(ContentService.MimeType.JAVASCRIPT);
-  return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+  const out=cb
+    ? ContentService.createTextOutput(cb+'('+json+')').setMimeType(ContentService.MimeType.JAVASCRIPT)
+    : ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+  return out;
 }
 function sheet(){
   const ss=SpreadsheetApp.getActiveSpreadsheet();
@@ -659,8 +663,27 @@ function copyScript(btn) {
   });
 }
 
-/* ── JSONP 호출 (CORS 우회) ── */
-function apiCall(params, attempt) {
+/* ── API 호출 (fetch 우선, JSONP 폴백) ── */
+async function apiCall(params, attempt) {
+  attempt = attempt || 1;
+  const qs = new URLSearchParams(params).toString();
+  const url = SCRIPT_URL + '?' + qs;
+
+  // fetch 먼저 시도
+  try {
+    const res = await Promise.race([
+      fetch(url, { mode: 'cors' }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 20000))
+    ]);
+    const data = await res.json();
+    return data;
+  } catch(e) {
+    // fetch 실패시 JSONP로 폴백
+    return jsonpCall(params, attempt);
+  }
+}
+
+function jsonpCall(params, attempt) {
   attempt = attempt || 1;
   return new Promise((resolve, reject) => {
     const cbName = '_cb_' + Date.now();
@@ -668,11 +691,8 @@ function apiCall(params, attempt) {
       delete window[cbName];
       const el = document.getElementById(cbName);
       if (el) el.remove();
-      if (attempt < 3) {
-        resolve(apiCall(params, attempt + 1));
-      } else {
-        reject(new Error('timeout'));
-      }
+      if (attempt < 3) resolve(jsonpCall(params, attempt + 1));
+      else reject(new Error('timeout'));
     }, 30000);
 
     window[cbName] = (data) => {
@@ -683,8 +703,8 @@ function apiCall(params, attempt) {
       resolve(data);
     };
 
-    params.callback = cbName;
-    const qs = new URLSearchParams(params).toString();
+    const p = Object.assign({}, params, { callback: cbName });
+    const qs = new URLSearchParams(p).toString();
     const script = document.createElement('script');
     script.id = cbName;
     script.src = SCRIPT_URL + '?' + qs;
@@ -692,11 +712,8 @@ function apiCall(params, attempt) {
       clearTimeout(timeout);
       delete window[cbName];
       script.remove();
-      if (attempt < 3) {
-        resolve(apiCall(params, attempt + 1));
-      } else {
-        reject(new Error('script load failed'));
-      }
+      if (attempt < 3) resolve(jsonpCall(params, attempt + 1));
+      else reject(new Error('script load failed'));
     };
     document.head.appendChild(script);
   });
