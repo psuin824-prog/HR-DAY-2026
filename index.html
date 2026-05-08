@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)file:///C:/Users/FURSYS/Downloads/hrday2026-planner_18.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR Day 2026 — 세션 플래너</title>
+<link href="./index_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0e0e0e;
+  --surface:  #161616;
+  --surface2: #1e1e1e;
+  --border:   rgba(255,255,255,0.08);
+  --border2:  rgba(255,255,255,0.14);
+  --text:     #f0f0f0;
+  --muted:    #888;
+  --muted2:   #bbb;
+  --accent:   #4d9fff;
+  --accent2:  #1a6fcf;
+  --accent-bg:rgba(77,159,255,0.12);
+  --success:  #3ecf6a;
+  --error:    #ff6b6b;
+  --radius:   12px;
+  --radius-sm:7px;
+  /* track colors */
+  --gw:  #4d9fff; --gw-bg:  rgba(77,159,255,0.1);
+  --ehr: #a78bfa; --ehr-bg: rgba(167,139,250,0.1);
+  --biz: #fb923c; --biz-bg: rgba(251,146,60,0.1);
+  --htr: #34d399; --htr-bg: rgba(52,211,153,0.1);
+  --htc: #f472b6; --htc-bg: rgba(244,114,182,0.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Pretendard', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+header {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(14,14,14,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: 56px;
+  display: flex; align-items: center;
+  padding: 0 28px; gap: 14px;
+}
+.logo-mark {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent);
+}
+.logo-sep { width: 1px; height: 18px; background: var(--border2); }
+.logo-title { font-size: 13px; font-weight: 500; color: var(--muted2); }
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--accent-bg); color: var(--accent);
+  border: 1px solid rgba(77,159,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0; letter-spacing: 0;
+}
+.avatar.lg { width: 38px; height: 38px; font-size: 13px; }
+.header-name { font-size: 12px; color: var(--muted2); }
+
+main { max-width: 880px; margin: 0 auto; padding: 32px 20px 80px; }
+.page { display: none; }
+.page.on { display: block; }
+
+/* ── Buttons ── */
+.btn {
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-size: 13px; font-weight: 500; font-family: inherit;
+  cursor: pointer;
+  background: var(--surface2); color: var(--text);
+  transition: all .15s;
+  white-space: nowrap;
+}
+.btn:hover { border-color: rgba(255,255,255,0.25); background: #262626; }
+.btn.pri {
+  background: var(--accent); color: #fff;
+  border-color: var(--accent);
+}
+.btn.pri:hover { background: #3a8eef; border-color: #3a8eef; }
+.btn.sm { padding: 7px 14px; font-size: 12px; }
+.btn.ghost { background: transparent; border-color: var(--border); color: var(--muted2); }
+.btn.ghost:hover { background: var(--surface2); color: var(--text); }
+.btn-row { display: flex; gap: 8px; }
+
+/* ── Back btn ── */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--muted);
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  padding: 0; margin-bottom: 20px; transition: color .12s;
+}
+.back-btn:hover { color: var(--text); }
+
+/* ── Setup page ── */
+.setup-wrap { max-width: 520px; margin: 40px auto 0; }
+.setup-wrap h2 {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.03em;
+  margin-bottom: 8px; color: var(--text);
+}
+.setup-wrap > p { font-size: 13px; color: var(--muted); line-height: 1.75; margin-bottom: 24px; }
+
+.steps {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 22px;
+  margin-bottom: 16px;
+}
+.step {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 13px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px; line-height: 1.7; color: var(--muted2);
+}
+.step:last-child { border-bottom: none; }
+.snum {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--accent-bg); color: var(--accent);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.step a { color: var(--accent); text-decoration: none; }
+.step a:hover { text-decoration: underline; }
+.step strong { color: var(--text); font-weight: 500; }
+code {
+  background: rgba(255,255,255,0.07); color: #fbbf24;
+  padding: 2px 7px; border-radius: 4px;
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px;
+}
+
+.input-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px 24px;
+}
+.input-card label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.input-card input {
+  width: 100%;
+  background: var(--bg); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px; font-size: 13px; font-family: inherit;
+  color: var(--text); margin-bottom: 14px;
+  transition: border-color .15s;
+}
+.input-card input:focus { outline: none; border-color: var(--accent); }
+.input-card input::placeholder { color: #444; }
+.hint { font-size: 11px; color: var(--muted); margin-top: 12px; line-height: 1.65; }
+
+/* ── Landing ── */
+.landing-wrap { max-width: 480px; margin: 0 auto; }
+.hero {
+  text-align: center; padding: 48px 24px 32px;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px;
+}
+.hero-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.hero h1 {
+  font-size: 26px; font-weight: 700; letter-spacing: -0.04em;
+  line-height: 1.35; margin-bottom: 12px; color: var(--text);
+}
+.hero p { font-size: 13px; color: var(--muted); line-height: 1.75; margin-bottom: 32px; }
+
+.name-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+}
+.name-card label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.name-card input {
+  width: 100%; background: var(--bg); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 11px 14px;
+  font-size: 14px; font-family: inherit; color: var(--text); margin-bottom: 14px;
+  transition: border-color .15s;
+}
+.name-card input:focus { outline: none; border-color: var(--accent); }
+.name-card input::placeholder { color: #444; }
+.name-card select {
+  width: 100%; background: var(--bg); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 11px 14px;
+  font-size: 14px; font-family: inherit; color: var(--text);
+  cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+  transition: border-color .15s;
+}
+.name-card select:focus { outline: none; border-color: var(--accent); }
+.name-card select option { background: #1e1e1e; }
+
+/* ── Session input page ── */
+.page-title { font-size: 18px; font-weight: 700; letter-spacing: -0.03em; color: var(--text); margin-bottom: 4px; }
+.page-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+/* ── Time slot groups ── */
+.slot-group { margin-bottom: 20px; }
+.slot-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 10px;
+}
+.slot-time {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--accent); font-variant-numeric: tabular-nums;
+}
+.slot-line { flex: 1; height: 1px; background: var(--border); }
+.slot-special {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  font-size: 13px; color: var(--muted2);
+  text-align: center; letter-spacing: 0.01em;
+}
+
+.sessions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.session-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  position: relative;
+  display: flex; flex-direction: column; gap: 8px;
+  user-select: none;
+}
+.session-card:hover { border-color: var(--border2); background: var(--surface2); }
+.session-card.selected {
+  border-color: var(--accent);
+  background: rgba(77,159,255,0.07);
+}
+.session-card.selected .check-dot {
+  opacity: 1; transform: scale(1);
+}
+
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.track-pill {
+  display: inline-block; font-size: 9px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 99px; flex-shrink: 0;
+}
+.p-gw  { background: var(--gw-bg);  color: var(--gw);  }
+.p-ehr { background: var(--ehr-bg); color: var(--ehr); }
+.p-biz { background: var(--biz-bg); color: var(--biz); }
+.p-htr { background: var(--htr-bg); color: var(--htr); }
+.p-htc { background: var(--htc-bg); color: var(--htc); }
+
+.check-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; opacity: 0;
+  transform: scale(0.5);
+  transition: opacity .15s, transform .15s;
+}
+.check-dot svg { width: 10px; height: 10px; }
+
+.card-title { font-size: 13px; font-weight: 500; line-height: 1.5; color: var(--text); }
+.card-speaker { font-size: 11px; color: var(--muted); }
+.card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
+.card-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--muted);
+  text-decoration: none;
+  padding: 3px 0;
+  border-bottom: 1px solid transparent;
+  transition: color .12s, border-color .12s;
+  z-index: 10; position: relative;
+}
+.card-link:hover { color: var(--accent); border-color: rgba(77,159,255,0.4); }
+.card-link svg { width: 10px; height: 10px; flex-shrink: 0; }
+
+.save-bar { display: flex; align-items: center; gap: 12px; margin-top: 24px; }
+.status { font-size: 12px; }
+.status.ok  { color: var(--success); }
+.status.err { color: var(--error); }
+
+/* ── Admin ── */
+.admin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.ov-slot { margin-bottom: 24px; }
+.ov-slot-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.ov-slot-time { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.ov-slot-line { flex: 1; height: 1px; background: var(--border); }
+.ov-special { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-size: 13px; color: var(--muted2); text-align: center; }
+.ov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.ov-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; }
+.ov-title { font-size: 12px; font-weight: 500; line-height: 1.5; color: var(--text); margin-bottom: 4px; }
+.ov-speaker { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+.ov-attendees { display: flex; flex-wrap: wrap; gap: 5px; min-height: 22px; }
+.ov-chip { display: inline-flex; align-items: center; background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(77,159,255,0.25); font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 99px; }
+.ov-empty { font-size: 11px; color: #444; font-style: italic; }
+.empty-state { text-align: center; padding: 56px 24px; color: var(--muted); font-size: 13px; line-height: 1.9; }
+.loader { text-align: center; padding: 48px; color: var(--muted); font-size: 12px; }
+.empty-label { font-size: 12px; color: #555; font-style: italic; }
+
+/* ── Error box ── */
+.error-box {
+  background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.25);
+  border-radius: var(--radius-sm); padding: 14px 16px;
+  font-size: 12px; color: #ff9999; line-height: 1.7; margin-top: 10px;
+}
+.error-box strong { color: var(--error); }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo-mark">HR day 2026</span>
+  <div class="logo-sep"></div>
+  <span class="logo-title">세션 플래너</span>
+  <div class="header-right" id="header-right" style="display:none;">
+    <div class="avatar" id="h-avatar"></div>
+    <span class="header-name" id="h-name"></span>
+  </div>
+</header>
+
+<main>
+
+<!-- ① 설정 -->
+<div id="pg-setup" class="page">
+  <div class="setup-wrap">
+    <h2>처음 설정하기</h2>
+    <p>Google Apps Script를 백엔드로 사용해요.<br>아래 안내대로 따라하면 5분 안에 완료돼요.</p>
+
+    <div class="steps">
+      <div class="step"><div class="snum">1</div><div><a href="https://sheets.new/" target="_blank">sheets.new</a> 에서 새 스프레드시트를 열어요.</div></div>
+      <div class="step"><div class="snum">2</div><div>상단 메뉴 → <strong>확장 프로그램</strong> → <strong>Apps Script</strong> 클릭</div></div>
+      <div class="step"><div class="snum">3</div><div>편집기의 기존 코드 전부 지우고 → 아래 <strong>스크립트 복사</strong> 후 붙여넣기</div></div>
+      <div class="step"><div class="snum">4</div><div>💾 저장 → <strong>배포</strong> → <strong>새 배포</strong> 클릭</div></div>
+      <div class="step"><div class="snum">5</div><div>유형: <code>웹 앱</code> · 액세스: <code>모든 사용자</code> → <strong>배포</strong></div></div>
+      <div class="step"><div class="snum">6</div><div>표시된 <strong>웹 앱 URL</strong> 복사 → 아래 입력칸에 붙여넣기</div></div>
+    </div>
+
+    <div style="margin-bottom:14px; display:flex; gap:8px;">
+      <button class="btn sm" onclick="copyScript(this)">📋 스크립트 복사</button>
+    </div>
+
+    <div class="input-card">
+      <label>Apps Script 웹 앱 URL</label>
+      <input type="text" id="script-url" placeholder="https://script.google.com/macros/s/...">
+      <button class="btn pri" style="width:100%;" onclick="saveSetup()">저장하고 시작하기</button>
+      <p class="hint">URL은 이 브라우저에만 저장되며 외부로 전송되지 않아요.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ② 랜딩 -->
+<div id="pg-landing" class="page on">
+  <div class="landing-wrap">
+    <div class="hero">
+      <div class="hero-eyebrow"><div class="hero-dot"></div>2026.05.12 (화)<div class="hero-dot"></div></div>
+      <h1>AI와 글로벌이<br>만들어낸 확장의 시대</h1>
+      <p>들을 세션을 선택하고<br>팀 전체 현황을 한눈에 확인해요.</p>
+    </div>
+    <div class="name-card">
+      <label>이름 선택</label>
+      <select id="name-select" onchange="onNameChange(this)">
+        <option value="">선택하세요</option>
+        <option>김유희</option>
+        <option>나혜연</option>
+        <option>구기중</option>
+        <option>박수인</option>
+        <option>박예림</option>
+        <option>조승호</option>
+      </select>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn ghost" style="flex:1;" onclick="goAdmin()">팀 현황 보기</button>
+        <button class="btn pri" style="flex:1;" id="go-input-btn" onclick="goInput()">세션 선택하기 →</button>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:16px;">
+      <button class="back-btn" onclick="showPage(&#39;pg-setup&#39;)" style="justify-content:center; margin:0;">⚙ URL 설정 변경</button>
+    </p>
+  </div>
+</div>
+
+<!-- ③ 세션 선택 -->
+<div id="pg-input" class="page">
+  <button class="back-btn" onclick="showPage(&#39;pg-landing&#39;)">← 뒤로</button>
+  <div class="page-title" id="input-title">세션 선택</div>
+  <div class="page-sub">시간대별로 원하는 세션을 골라요. 선택하면 파란 테두리로 표시돼요. &nbsp;·&nbsp; <a href="https://event.wanted.co.kr/highfive/2026" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(77,159,255,0.35);">각 세션별 세부 내용 ↗</a></div>
+  <div id="slots-container"></div>
+  <div class="save-bar">
+    <button class="btn pri" onclick="saveSelections()">저장하기</button>
+    <span class="status" id="save-st"></span>
+    <button class="btn ghost" id="go-admin-btn" onclick="goAdmin()" style="display:none;">팀 전체 현황 보러가기 →</button>
+  </div>
+</div>
+
+<!-- ④ 관리자 -->
+<div id="pg-admin" class="page">
+  <div class="admin-header">
+    <button class="back-btn" onclick="showPage(&#39;pg-landing&#39;)" style="margin:0;">← 뒤로</button>
+    <span class="page-title" style="margin:0;">팀 전체 현황</span>
+    <button class="btn sm ghost" onclick="loadAdmin()" style="margin-left:auto;">↻ 새로고침</button>
+  </div>
+  <div id="admin-content"><div class="loader">불러오는 중…</div></div>
+</div>
+
+</main>
+
+<script>
+/* ── 세션 데이터 ── */
+const SLOTS = [
+  {
+    time: "09:57 – 10:00", special: true,
+    label: "Opening Speech — 원티드랩 대표 이복기"
+  },
+  {
+    time: "10:00 – 10:50",
+    sessions: [
+      { track:"Global Wave",    title:"실리콘밸리의 성장 공식: 개인의 성장이 조직의 스케일업으로", speaker:"Stella Cho / Netflix" },
+      { track:"Essential HR",   title:"AI 에이전트로 진화한 조직진단 실전 사례",                   speaker:"김응운 / LG전자" },
+      { track:"Business Growth",title:"Own It",                                                     speaker:"백인범 / 우아한형제들" },
+      { track:"HR Trend",       title:"온디바이스 AI/모델 최적화 기업의 인재 채용",                speaker:"정성록 / Nota AI" },
+      { track:"HR Tech",        title:"SK하이닉스의 Agentic AI 시대를 준비하는 방법",              speaker:"김원태 / SK하이닉스" },
+    ]
+  },
+  {
+    time: "11:10 – 12:00",
+    sessions: [
+      { track:"Global Wave",    title:"국경을 넘나드는 글로벌 기업의 Talent Mobility 전략",         speaker:"김영민 / 로레알코리아" },
+      { track:"Essential HR",   title:"pause(education)→experiment()",                             speaker:"이덕현 / 포스코인재창조원" },
+      { track:"Business Growth",title:"샌드버드의 AI 에이전트 피벗 스토리, 그리고 변화관리",        speaker:"이상희 / 샌드버드코리아" },
+      { track:"HR Trend",       title:"2026 HR Mega Trend",                                        speaker:"김지수 / 어서코리아" },
+      { track:"HR Tech",        title:"피플 애널리스트의 친구누설: AI 시대, 진짜 HR 데이터 활용법", speaker:"유형균 / 비상교육" },
+    ]
+  },
+  {
+    time: "12:50 – 13:30", special: true,
+    label: "런치 패널토크 — 임창현 · 오성미 · 성하준 · Stella Cho · 박상우"
+  },
+  {
+    time: "14:00 – 14:50",
+    sessions: [
+      { track:"Global Wave",    title:"한국 토종 HR의 글로벌 커리어 스케일링",                     speaker:"Cathy Choi / 틱톡 싱가폴" },
+      { track:"Essential HR",   title:"리더십을 투자자의 언어로: Leadership Capital",              speaker:"임창현 / SK아카데미" },
+      { track:"Business Growth",title:"Mission: AI Possible in the Real World!",                   speaker:"윤성호 / 마키나락스" },
+      { track:"HR Trend",       title:"조직과 직무의 경계를 넘어, DevRel이 만드는 새로운 연결",    speaker:"최가인 / CJ올리브영" },
+      { track:"HR Tech",        title:"HR 데이터의 온톨로지 적용",                                speaker:"김덕중 / 피브" },
+    ]
+  },
+  {
+    time: "15:10 – 16:00",
+    sessions: [
+      { track:"Global Wave",    title:"0, 1, 10: 한국에서 검증하고 미국으로 확장하기",             speaker:"정윤호 / 해빗팩토리" },
+      { track:"Essential HR",   title:"LG화학의 새로운 일하는 방식 OKR과 AI",                     speaker:"마가태 / LG화학" },
+      { track:"Business Growth",title:"지속 가능하게 성장하는 조직 만들기",                        speaker:"이해석 / 플라리스오피스" },
+      { track:"HR Trend",       title:"정서적 연봉: 당신 회사의 기업문화는 얼마입니까?",          speaker:"신재용 / 서울대학교" },
+      { track:"HR Tech",        title:"AI는 진짜 우리의 문제를 해결해 주나요?",                   speaker:"성하준 / 카카오모빌리티" },
+    ]
+  },
+  {
+    time: "16:20 – 17:10",
+    sessions: [
+      { track:"Global Wave",    title:"Beyond Local, Truly Global: 글로벌 지사 운영기",           speaker:"셜돈온 / 라인 페이 홀딩 태국 컴퍼니" },
+      { track:"Essential HR",   title:"고성과 조직은 무엇이 다른가",                              speaker:"강정욱 / 레몬베이스" },
+      { track:"Business Growth",title:"초격차 인재들이 모이는 조직은 어떻게 만들어지는가",         speaker:"송지혜 / RLWRLD" },
+      { track:"HR Trend",       title:"변화 속에서 학습하고 진화하는 리더십 메커니즘",             speaker:"최낙함 / 현대그룹" },
+      { track:"HR Tech",        title:"개발자 채용을 어떻게 하면 잘 할 수 있을까요?",             speaker:"류창완 / 현대오토에버" },
+    ]
+  },
+  {
+    time: "17:30 – 18:20",
+    sessions: [
+      { track:"Global Wave",    title:"AI 시대 업무에 대한 재정의",                               speaker:"오성미 / 마이크로소프트" },
+      { track:"Essential HR",   title:"시니어 채용 활용법: 시니어 X MZ의 기묘한 협업",            speaker:"장경국 / PTKOREA" },
+      { track:"Business Growth",title:"AI 리터러시를 넘어 AI Native 조직으로 확장하는 법",        speaker:"허원진 / 마이리얼트립" },
+      { track:"HR Trend",       title:"HRBP는 어떻게 조직을 변화시키는가: 권한 없이 조직을 움직이는 법", speaker:"김종울 / 필링페이미" },
+      { track:"HR Tech",        title:"바이브 코딩으로 여는 'HRD 메이카' 시대",                   speaker:"박상우 / kt cloud" },
+    ]
+  },
+];
+
+/* 전체 세션 flat list (인덱싱용) */
+const ALL_SESSIONS = [];
+SLOTS.forEach((slot, si) => {
+  if (!slot.special) {
+    slot.sessions.forEach((s, i) => {
+      ALL_SESSIONS.push({ ...s, slotIdx: si, idx: ALL_SESSIONS.length });
+    });
+  }
+});
+
+const TRACK_CLS = {
+  "Global Wave":"p-gw","Essential HR":"p-ehr",
+  "Business Growth":"p-biz","HR Trend":"p-htr","HR Tech":"p-htc"
+};
+
+/* ── Apps Script 코드 (복사용) ── */
+const SCRIPT_CODE = `// HR Day 2026 세션 플래너 - Apps Script
+const SESSIONS = [
+  {time:"10:00~10:50",track:"Global Wave",    title:"실리콘밸리의 성장 공식"},
+  {time:"10:00~10:50",track:"Essential HR",   title:"AI 에이전트로 진화한 조직진단 실전 사례"},
+  {time:"10:00~10:50",track:"Business Growth",title:"Own It"},
+  {time:"10:00~10:50",track:"HR Trend",       title:"온디바이스 AI/모델 최적화 기업의 인재 채용"},
+  {time:"10:00~10:50",track:"HR Tech",        title:"SK하이닉스의 Agentic AI 시대를 준비하는 방법"},
+  {time:"11:10~12:00",track:"Global Wave",    title:"국경을 넘나드는 글로벌 기업의 Talent Mobility 전략"},
+  {time:"11:10~12:00",track:"Essential HR",   title:"pause(education)→experiment()"},
+  {time:"11:10~12:00",track:"Business Growth",title:"샌드버드의 AI 에이전트 피벗 스토리, 그리고 변화관리"},
+  {time:"11:10~12:00",track:"HR Trend",       title:"2026 HR Mega Trend"},
+  {time:"11:10~12:00",track:"HR Tech",        title:"피플 애널리스트의 친구누설"},
+  {time:"14:00~14:50",track:"Global Wave",    title:"한국 토종 HR의 글로벌 커리어 스케일링"},
+  {time:"14:00~14:50",track:"Essential HR",   title:"리더십을 투자자의 언어로: Leadership Capital"},
+  {time:"14:00~14:50",track:"Business Growth",title:"Mission: AI Possible in the Real World!"},
+  {time:"14:00~14:50",track:"HR Trend",       title:"조직과 직무의 경계를 넘어, DevRel"},
+  {time:"14:00~14:50",track:"HR Tech",        title:"HR 데이터의 온톨로지 적용"},
+  {time:"15:10~16:00",track:"Global Wave",    title:"0, 1, 10: 한국에서 검증하고 미국으로 확장하기"},
+  {time:"15:10~16:00",track:"Essential HR",   title:"LG화학의 새로운 일하는 방식 OKR과 AI"},
+  {time:"15:10~16:00",track:"Business Growth",title:"지속 가능하게 성장하는 조직 만들기"},
+  {time:"15:10~16:00",track:"HR Trend",       title:"정서적 연봉: 당신 회사의 기업문화는 얼마입니까?"},
+  {time:"15:10~16:00",track:"HR Tech",        title:"AI는 진짜 우리의 문제를 해결해 주나요?"},
+  {time:"16:20~17:10",track:"Global Wave",    title:"Beyond Local, Truly Global: 글로벌 지사 운영기"},
+  {time:"16:20~17:10",track:"Essential HR",   title:"고성과 조직은 무엇이 다른가"},
+  {time:"16:20~17:10",track:"Business Growth",title:"초격차 인재들이 모이는 조직은 어떻게 만들어지는가"},
+  {time:"16:20~17:10",track:"HR Trend",       title:"변화 속에서 학습하고 진화하는 리더십 메커니즘"},
+  {time:"16:20~17:10",track:"HR Tech",        title:"개발자 채용을 어떻게 하면 잘 할 수 있을까요?"},
+  {time:"17:30~18:20",track:"Global Wave",    title:"AI 시대 업무에 대한 재정의"},
+  {time:"17:30~18:20",track:"Essential HR",   title:"시니어 채용 활용법: 시니어 X MZ의 기묘한 협업"},
+  {time:"17:30~18:20",track:"Business Growth",title:"AI 리터러시를 넘어 AI Native 조직으로 확장하는 법"},
+  {time:"17:30~18:20",track:"HR Trend",       title:"HRBP는 어떻게 조직을 변화시키는가"},
+  {time:"17:30~18:20",track:"HR Tech",        title:"바이브 코딩으로 여는 'HRD 메이카' 시대"},
+];
+
+function doGet(e){return handle(e)}
+function handle(e){
+  const cb=e.parameter.callback,a=e.parameter.action;
+  let r;
+  try{
+    if(a==='save'){r=save(e.parameter.name,JSON.parse(e.parameter.checks));updateSummary();}
+    else if(a==='load')r=load(e.parameter.name);
+    else if(a==='all')r=all();
+    else r={ok:false,error:'unknown action'};
+  }catch(err){r={ok:false,error:err.toString()};}
+  const json=JSON.stringify(r);
+  if(cb)return ContentService.createTextOutput(cb+'('+json+')').setMimeType(ContentService.MimeType.JAVASCRIPT);
+  return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+}
+function sheet(){
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  let s=ss.getSheetByName('sessions');
+  if(!s){s=ss.insertSheet('sessions');s.appendRow(['name','checks','updatedAt']);s.setFrozenRows(1);}
+  return s;
+}
+function save(name,checks){
+  const s=sheet(),d=s.getDataRange().getValues(),now=new Date().toISOString(),c=JSON.stringify(checks);
+  for(let i=1;i<d.length;i++){if(d[i][0]===name){s.getRange(i+1,2).setValue(c);s.getRange(i+1,3).setValue(now);return{ok:true};}}
+  s.appendRow([name,c,now]);return{ok:true};
+}
+function load(name){
+  const s=sheet(),d=s.getDataRange().getValues();
+  for(let i=1;i<d.length;i++){if(d[i][0]===name)return{ok:true,checks:JSON.parse(d[i][1]||'{}')}}
+  return{ok:true,checks:null};
+}
+function all(){
+  const s=sheet(),d=s.getDataRange().getValues(),p=[];
+  for(let i=1;i<d.length;i++){if(d[i][0])p.push({name:d[i][0],checks:JSON.parse(d[i][1]||'{}'),updatedAt:d[i][2]});}
+  return{ok:true,people:p};
+}
+function updateSummary(){
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  let sum=ss.getSheetByName('요약');
+  if(!sum)sum=ss.insertSheet('요약');
+  sum.clearContents();
+
+  // 헤더 행: 이름 목록
+  const raw=sheet().getDataRange().getValues();
+  const people=[];
+  for(let i=1;i<raw.length;i++){
+    if(raw[i][0])people.push({name:raw[i][0],checks:JSON.parse(raw[i][1]||'{}')});
+  }
+  const names=people.map(p=>p.name);
+
+  // 1행: 시간 / 트랙 / 세션 / 이름1 / 이름2 ...
+  const header=['시간','트랙','세션'].concat(names);
+  sum.appendRow(header);
+
+  // 세션별 행
+  SESSIONS.forEach((s,idx)=>{
+    const row=[s.time, s.track, s.title];
+    names.forEach((_,pi)=>{
+      row.push(people[pi].checks[idx] ? '✓' : '');
+    });
+    sum.appendRow(row);
+  });
+
+  // 스타일: 헤더 굵게 + 배경
+  sum.getRange(1,1,1,header.length).setFontWeight('bold').setBackground('#1a1a2e').setFontColor('#ffffff');
+  sum.setFrozenRows(1);
+  sum.setFrozenColumns(3);
+  // 열 너비 자동 조정
+  sum.autoResizeColumns(1, header.length);
+}`;
+
+/* ── 상태 ── */
+let currentName = '';
+let myChecks = {}; // { globalIdx: bool }
+let SCRIPT_URL = '';
+
+function initChecks() {
+  ALL_SESSIONS.forEach(s => { myChecks[s.idx] = false; });
+}
+initChecks();
+
+/* ── 페이지 ── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+
+function init() {
+  SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrRQeRECP2Mbl2IhNpj4sanQLuwJ4dJtjfK3VUyIe02-Tkcl_R80VN3QS4VjtCc8Jebg/exec';
+  localStorage.setItem('hrday_script_url', SCRIPT_URL);
+  showPage('pg-landing');
+}
+
+/* ── 설정 저장 ── */
+function saveSetup() {
+  const url = document.getElementById('script-url').value.trim();
+  if (!url.startsWith('https://script.google.com')) {
+    alert('올바른 Apps Script URL을 입력해 주세요.\nhttps://script.google.com/macros/s/... 형태여야 해요.');
+    return;
+  }
+  SCRIPT_URL = url;
+  localStorage.setItem('hrday_script_url', url);
+  showPage('pg-landing');
+}
+
+/* ── 스크립트 복사 ── */
+function copyScript(btn) {
+  navigator.clipboard.writeText(SCRIPT_CODE).then(() => {
+    btn.textContent = '✅ 복사됨!';
+    setTimeout(() => { btn.textContent = '📋 스크립트 복사'; }, 2500);
+  });
+}
+
+/* ── JSONP 호출 (CORS 우회) ── */
+function apiCall(params) {
+  return new Promise((resolve, reject) => {
+    const cbName = '_cb_' + Date.now();
+    const timeout = setTimeout(() => {
+      delete window[cbName];
+      reject(new Error('timeout'));
+    }, 15000);
+
+    window[cbName] = (data) => {
+      clearTimeout(timeout);
+      delete window[cbName];
+      const el = document.getElementById(cbName);
+      if (el) el.remove();
+      resolve(data);
+    };
+
+    params.callback = cbName;
+    const qs = new URLSearchParams(params).toString();
+    const script = document.createElement('script');
+    script.id = cbName;
+    script.src = SCRIPT_URL + '?' + qs;
+    script.onerror = () => {
+      clearTimeout(timeout);
+      delete window[cbName];
+      script.remove();
+      reject(new Error('script load failed'));
+    };
+    document.head.appendChild(script);
+  });
+}
+
+/* ── 랜딩 → 입력 ── */
+function onNameChange(sel) {
+  currentName = sel.value.trim();
+}
+
+async function goInput() {
+  const sel = document.getElementById('name-select');
+  if (sel) currentName = sel.value.trim();
+  if (!currentName) { alert('이름을 선택해 주세요.'); return; }
+  document.getElementById('h-avatar').textContent = currentName.length >= 3 ? currentName.slice(1) : currentName.slice(0, 2);
+  document.getElementById('h-name').textContent = currentName;
+  document.getElementById('header-right').style.display = 'flex';
+  document.getElementById('input-title').textContent = currentName + '님의 세션 선택';
+  document.getElementById('save-st').textContent = '';
+  initChecks();
+  buildSlots();
+  showPage('pg-input');
+  // 기존 저장값 불러오기
+  try {
+    const r = await apiCall({ action: 'load', name: currentName });
+    if (r.ok && r.checks) {
+      myChecks = r.checks;
+      // 카드 상태 동기화
+      document.querySelectorAll('.session-card').forEach(card => {
+        const idx = parseInt(card.dataset.idx);
+        if (myChecks[idx]) card.classList.add('selected');
+      });
+    }
+  } catch(e) { /* 불러오기 실패는 무시, 빈 상태로 시작 */ }
+}
+
+/* ── 슬롯 그리드 빌드 ── */
+function buildSlots() {
+  const container = document.getElementById('slots-container');
+  container.innerHTML = '';
+  let globalIdx = 0;
+
+  SLOTS.forEach(slot => {
+    const group = document.createElement('div');
+    group.className = 'slot-group';
+
+    // 헤더
+    const header = document.createElement('div');
+    header.className = 'slot-header';
+    header.innerHTML = `<span class="slot-time">${slot.time}</span><div class="slot-line"></div>`;
+    group.appendChild(header);
+
+    if (slot.special) {
+      const sp = document.createElement('div');
+      sp.className = 'slot-special';
+      sp.textContent = slot.label;
+      group.appendChild(sp);
+    } else {
+      const grid = document.createElement('div');
+      grid.className = 'sessions-grid';
+      slot.sessions.forEach(s => {
+        const idx = globalIdx++;
+        const cls = TRACK_CLS[s.track] || '';
+        const card = document.createElement('div');
+        card.className = 'session-card' + (myChecks[idx] ? ' selected' : '');
+        card.dataset.idx = idx;
+        card.dataset.slotIdx = SLOTS.indexOf(slot);
+        card.innerHTML = `
+          <div class="card-top">
+            <span class="track-pill ${cls}">${s.track}</span>
+            <div class="check-dot">
+              <svg viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1.5,5 4,7.5 8.5,2.5"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card-title">${s.title}</div>
+          <div class="card-speaker">${s.speaker}</div>`;
+        card.addEventListener('click', () => toggleCard(card, idx));
+        grid.appendChild(card);
+      });
+      group.appendChild(grid);
+    }
+    container.appendChild(group);
+  });
+}
+
+function toggleCard(card, idx) {
+  const slotIdx = card.dataset.slotIdx;
+  const wasSelected = card.classList.contains('selected');
+  // 같은 시간대 카드 모두 해제
+  document.querySelectorAll(`.session-card[data-slot-idx="${slotIdx}"]`).forEach(c => {
+    c.classList.remove('selected');
+    myChecks[parseInt(c.dataset.idx)] = false;
+  });
+  // 이미 선택된 카드면 해제만, 아니면 선택
+  if (!wasSelected) {
+    card.classList.add('selected');
+    myChecks[idx] = true;
+  }
+}
+
+/* ── 저장 ── */
+async function saveSelections() {
+  const st = document.getElementById('save-st');
+  st.textContent = '저장 중…'; st.className = 'status';
+  document.getElementById('go-admin-btn').style.display = 'none';
+  try {
+    const r = await apiCall({ action: 'save', name: currentName, checks: JSON.stringify(myChecks) });
+    if (r.ok) {
+      st.textContent = '✓ 저장되었습니다!'; st.className = 'status ok';
+      document.getElementById('go-admin-btn').style.display = '';
+    } else {
+      throw new Error(r.error || 'unknown error');
+    }
+  } catch(e) {
+    st.innerHTML = '';
+    st.className = 'status';
+    const errBox = document.createElement('div');
+    errBox.className = 'error-box';
+    errBox.innerHTML = `<strong>저장 실패</strong> — ${e.message}<br><br>
+      확인해 주세요:<br>
+      1. 배포 시 액세스를 <strong>"모든 사용자"</strong>로 설정했는지<br>
+      2. 배포 후 생성된 URL을 사용했는지 (편집기 URL ❌)<br>
+      3. URL이 <code>/exec</code>로 끝나는지 확인 (예: .../macros/s/ABC.../exec)<br>
+      4. 변경 후엔 <strong>새 배포</strong>를 다시 해야 해요 (기존 배포 URL 수정 ❌)`;
+    st.after(errBox);
+    setTimeout(() => errBox.remove(), 20000);
+  }
+}
+
+/* ── 관리자 ── */
+function goAdmin() {
+  showPage('pg-admin');
+  loadAdmin();
+}
+
+async function loadAdmin() {
+  const cont = document.getElementById('admin-content');
+  cont.innerHTML = '<div class="loader">불러오는 중…</div>';
+  try {
+    const r = await apiCall({ action: 'all' });
+    if (!r.ok) throw new Error(r.error);
+    const people = r.people || [];
+    if (people.length === 0) {
+      cont.innerHTML = `<div class="empty-state">아직 등록된 팀원이 없어요.<br>팀원들이 세션을 선택하고 저장하면 여기에 나타나요.</div>`;
+      return;
+    }
+    // 세션 idx → 듣는 사람 이름 목록 매핑
+    const attendeeMap = {};
+    people.forEach(person => {
+      ALL_SESSIONS.forEach(s => {
+        if (person.checks && person.checks[s.idx]) {
+          if (!attendeeMap[s.idx]) attendeeMap[s.idx] = [];
+          attendeeMap[s.idx].push(person.name);
+        }
+      });
+    });
+
+    let html = '';
+    let globalIdx = 0;
+    SLOTS.forEach(slot => {
+      html += `<div class="ov-slot">
+        <div class="ov-slot-header">
+          <span class="ov-slot-time">${slot.time}</span>
+          <div class="ov-slot-line"></div>
+        </div>`;
+      if (slot.special) {
+        html += `<div class="ov-special">${slot.label}</div>`;
+      } else {
+        html += `<div class="ov-grid">`;
+        slot.sessions.forEach(s => {
+          const idx = globalIdx++;
+          const cls = TRACK_CLS[s.track] || '';
+          const names = attendeeMap[idx] || [];
+          const chipsHtml = names.length
+            ? names.map(n => `<span class="ov-chip">${n}</span>`).join('')
+            : `<span class="ov-empty">없음</span>`;
+          html += `<div class="ov-card">
+            <span class="track-pill ${cls}" style="margin-bottom:8px;">${s.track}</span>
+            <div class="ov-title">${s.title}</div>
+            <div class="ov-speaker">${s.speaker}</div>
+            <div class="ov-attendees">${chipsHtml}</div>
+          </div>`;
+        });
+        html += `</div>`;
+      }
+      html += `</div>`;
+    });
+    cont.innerHTML = html;
+  } catch(e) {
+    cont.innerHTML = `<div class="error-box" style="margin:0;">
+      <strong>데이터를 불러오지 못했어요</strong><br>${e.message}<br><br>
+      URL 설정을 확인하거나 잠시 후 다시 시도해 주세요.
+    </div>`;
+  }
+}
+
+init();
+</script>
+
+
+</body></html>
