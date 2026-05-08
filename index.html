@@ -227,6 +227,7 @@ code {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 8px;
+  align-items: stretch;
 }
 
 .session-card {
@@ -239,6 +240,7 @@ code {
   position: relative;
   display: flex; flex-direction: column; gap: 8px;
   user-select: none;
+  height: 100%;
 }
 .session-card:hover { border-color: var(--border2); background: var(--surface2); }
 .session-card.selected {
@@ -773,7 +775,7 @@ function buildSlots() {
           </div>
           <div class="card-title">${s.title}</div>
           <div class="card-speaker">${s.speaker}</div>
-          <div style="font-size:10px; color:var(--muted); margin-top:4px;">📍 ${TRACK_VENUE[s.track]||''}</div>`;
+          <div style="font-size:10px; color:var(--muted); margin-top:auto; padding-top:6px;">📍 ${TRACK_VENUE[s.track]||''}</div>`;
         card.addEventListener('click', () => toggleCard(card, idx));
         grid.appendChild(card);
       });
