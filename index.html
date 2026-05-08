@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- saved from url=(0059)file:///C:/Users/FURSYS/Downloads/hrday2026-planner_18.html -->
-<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HR Day 2026 — 세션 플래너</title>
-<link href="./index_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:       #0e0e0e;
@@ -333,13 +333,13 @@ code {
 <main>
 
 <!-- ① 설정 -->
-<div id="pg-setup" class="page">
+<div id="pg-setup" class="page on">
   <div class="setup-wrap">
     <h2>처음 설정하기</h2>
     <p>Google Apps Script를 백엔드로 사용해요.<br>아래 안내대로 따라하면 5분 안에 완료돼요.</p>
 
     <div class="steps">
-      <div class="step"><div class="snum">1</div><div><a href="https://sheets.new/" target="_blank">sheets.new</a> 에서 새 스프레드시트를 열어요.</div></div>
+      <div class="step"><div class="snum">1</div><div><a href="https://sheets.new" target="_blank">sheets.new</a> 에서 새 스프레드시트를 열어요.</div></div>
       <div class="step"><div class="snum">2</div><div>상단 메뉴 → <strong>확장 프로그램</strong> → <strong>Apps Script</strong> 클릭</div></div>
       <div class="step"><div class="snum">3</div><div>편집기의 기존 코드 전부 지우고 → 아래 <strong>스크립트 복사</strong> 후 붙여넣기</div></div>
       <div class="step"><div class="snum">4</div><div>💾 저장 → <strong>배포</strong> → <strong>새 배포</strong> 클릭</div></div>
@@ -353,7 +353,7 @@ code {
 
     <div class="input-card">
       <label>Apps Script 웹 앱 URL</label>
-      <input type="text" id="script-url" placeholder="https://script.google.com/macros/s/...">
+      <input type="text" id="script-url" placeholder="https://script.google.com/macros/s/..." />
       <button class="btn pri" style="width:100%;" onclick="saveSetup()">저장하고 시작하기</button>
       <p class="hint">URL은 이 브라우저에만 저장되며 외부로 전송되지 않아요.</p>
     </div>
@@ -361,7 +361,7 @@ code {
 </div>
 
 <!-- ② 랜딩 -->
-<div id="pg-landing" class="page on">
+<div id="pg-landing" class="page">
   <div class="landing-wrap">
     <div class="hero">
       <div class="hero-eyebrow"><div class="hero-dot"></div>2026.05.12 (화)<div class="hero-dot"></div></div>
@@ -385,14 +385,14 @@ code {
       </div>
     </div>
     <p style="text-align:center; margin-top:16px;">
-      <button class="back-btn" onclick="showPage(&#39;pg-setup&#39;)" style="justify-content:center; margin:0;">⚙ URL 설정 변경</button>
+      <button class="back-btn" onclick="showPage('pg-setup')" style="justify-content:center; margin:0;">⚙ URL 설정 변경</button>
     </p>
   </div>
 </div>
 
 <!-- ③ 세션 선택 -->
 <div id="pg-input" class="page">
-  <button class="back-btn" onclick="showPage(&#39;pg-landing&#39;)">← 뒤로</button>
+  <button class="back-btn" onclick="showPage('pg-landing')">← 뒤로</button>
   <div class="page-title" id="input-title">세션 선택</div>
   <div class="page-sub">시간대별로 원하는 세션을 골라요. 선택하면 파란 테두리로 표시돼요. &nbsp;·&nbsp; <a href="https://event.wanted.co.kr/highfive/2026" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(77,159,255,0.35);">각 세션별 세부 내용 ↗</a></div>
   <div id="slots-container"></div>
@@ -406,7 +406,7 @@ code {
 <!-- ④ 관리자 -->
 <div id="pg-admin" class="page">
   <div class="admin-header">
-    <button class="back-btn" onclick="showPage(&#39;pg-landing&#39;)" style="margin:0;">← 뒤로</button>
+    <button class="back-btn" onclick="showPage('pg-landing')" style="margin:0;">← 뒤로</button>
     <span class="page-title" style="margin:0;">팀 전체 현황</span>
     <button class="btn sm ghost" onclick="loadAdmin()" style="margin-left:auto;">↻ 새로고침</button>
   </div>
@@ -625,7 +625,7 @@ function showPage(id) {
 }
 
 function init() {
-  SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrRQeRECP2Mbl2IhNpj4sanQLuwJ4dJtjfK3VUyIe02-Tkcl_R80VN3QS4VjtCc8Jebg/exec';
+  SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNQ4ZeLfn8xbk5Hkbvp6E86nm1rA4nutZHD_6Li8UTnrnrcKFLeuggcZ1zTffKUGfp/exec';
   localStorage.setItem('hrday_script_url', SCRIPT_URL);
   showPage('pg-landing');
 }
@@ -877,6 +877,5 @@ async function loadAdmin() {
 
 init();
 </script>
-
-
-</body></html>
+</body>
+</html>
