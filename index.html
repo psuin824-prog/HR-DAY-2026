@@ -651,13 +651,20 @@ function copyScript(btn) {
 }
 
 /* ── JSONP 호출 (CORS 우회) ── */
-function apiCall(params) {
+function apiCall(params, attempt) {
+  attempt = attempt || 1;
   return new Promise((resolve, reject) => {
     const cbName = '_cb_' + Date.now();
     const timeout = setTimeout(() => {
       delete window[cbName];
-      reject(new Error('timeout'));
-    }, 15000);
+      const el = document.getElementById(cbName);
+      if (el) el.remove();
+      if (attempt < 3) {
+        resolve(apiCall(params, attempt + 1));
+      } else {
+        reject(new Error('timeout'));
+      }
+    }, 30000);
 
     window[cbName] = (data) => {
       clearTimeout(timeout);
@@ -676,7 +683,11 @@ function apiCall(params) {
       clearTimeout(timeout);
       delete window[cbName];
       script.remove();
-      reject(new Error('script load failed'));
+      if (attempt < 3) {
+        resolve(apiCall(params, attempt + 1));
+      } else {
+        reject(new Error('script load failed'));
+      }
     };
     document.head.appendChild(script);
   });
@@ -782,7 +793,7 @@ function toggleCard(card, idx) {
 /* ── 저장 ── */
 async function saveSelections() {
   const st = document.getElementById('save-st');
-  st.textContent = '저장 중…'; st.className = 'status';
+  st.textContent = '저장 중… (최대 90초 소요될 수 있어요)'; st.className = 'status';
   document.getElementById('go-admin-btn').style.display = 'none';
   try {
     const r = await apiCall({ action: 'save', name: currentName, checks: JSON.stringify(myChecks) });
