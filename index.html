@@ -502,6 +502,13 @@ const TRACK_CLS = {
   "Global Wave":"p-gw","Essential HR":"p-ehr",
   "Business Growth":"p-biz","HR Trend":"p-htr","HR Tech":"p-htc"
 };
+const TRACK_VENUE = {
+  "Global Wave":"오디토리움",
+  "Essential HR":"그랜드볼룸 101호",
+  "Business Growth":"그랜드볼룸 102호",
+  "HR Trend":"그랜드볼룸 103호",
+  "HR Tech":"그랜드볼룸 104~105호"
+};
 
 /* ── Apps Script 코드 (복사용) ── */
 const SCRIPT_CODE = `// HR Day 2026 세션 플래너 - Apps Script
@@ -765,7 +772,8 @@ function buildSlots() {
             </div>
           </div>
           <div class="card-title">${s.title}</div>
-          <div class="card-speaker">${s.speaker}</div>`;
+          <div class="card-speaker">${s.speaker}</div>
+          <div style="font-size:10px; color:var(--muted); margin-top:4px;">📍 ${TRACK_VENUE[s.track]||''}</div>`;
         card.addEventListener('click', () => toggleCard(card, idx));
         grid.appendChild(card);
       });
@@ -870,6 +878,7 @@ async function loadAdmin() {
             <span class="track-pill ${cls}" style="margin-bottom:8px;">${s.track}</span>
             <div class="ov-title">${s.title}</div>
             <div class="ov-speaker">${s.speaker}</div>
+            <div style="font-size:10px; color:var(--muted); margin-bottom:8px;">📍 ${TRACK_VENUE[s.track]||''}</div>
             <div class="ov-attendees">${chipsHtml}</div>
           </div>`;
         });
