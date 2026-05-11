@@ -29,6 +29,52 @@
   --htr: #34d399; --htr-bg: rgba(52,211,153,0.1);
   --htc: #f472b6; --htc-bg: rgba(244,114,182,0.1);
 }
+/* ── 라이트 모드 ── */
+body.light {
+  --bg:       #f8f8f8;
+  --surface:  #ffffff;
+  --surface2: #f2f2f2;
+  --border:   rgba(0,0,0,0.09);
+  --border2:  rgba(0,0,0,0.15);
+  --text:     #1a1916;
+  --muted:    #888;
+  --muted2:   #555;
+  --accent:   #1a5fa8;
+  --accent2:  #0e3d73;
+  --accent-bg:rgba(26,95,168,0.1);
+  --success:  #1a6b2f;
+  --error:    #c0392b;
+  --gw:  #1a5fa8; --gw-bg:  rgba(26,95,168,0.1);
+  --ehr: #6d3ecf; --ehr-bg: rgba(109,62,207,0.1);
+  --biz: #c05a10; --biz-bg: rgba(192,90,16,0.1);
+  --htr: #0f7a4a; --htr-bg: rgba(15,122,74,0.1);
+  --htc: #b02070; --htc-bg: rgba(176,32,112,0.1);
+}
+body.light header {
+  background: rgba(255,255,255,0.92);
+}
+body.light .name-card select,
+body.light .input-card input,
+body.light .name-card input,
+body.light .note-field textarea {
+  background: #ffffff;
+  color: #1a1916;
+  border-color: rgba(0,0,0,0.2);
+}
+body.light .name-card select option {
+  background: #ffffff;
+  color: #1a1916;
+}
+body.light .modal {
+  background: #ffffff;
+}
+body.light .note-card {
+  background: #f2f2f2;
+}
+body.light .slot-special,
+body.light .ov-special {
+  background: #ffffff;
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
@@ -154,7 +200,7 @@ code {
   transition: border-color .15s;
 }
 .input-card input:focus { outline: none; border-color: var(--accent); }
-.input-card input::placeholder { color: #444; }
+.input-card input::placeholder { color: var(--muted); }
 .hint { font-size: 11px; color: var(--muted); margin-top: 12px; line-height: 1.65; }
 
 /* ── Landing ── */
@@ -186,7 +232,7 @@ code {
   transition: border-color .15s;
 }
 .name-card input:focus { outline: none; border-color: var(--accent); }
-.name-card input::placeholder { color: #444; }
+.name-card input::placeholder { color: var(--muted); }
 .name-card select {
   width: 100%; background: var(--bg); border: 1px solid var(--border2);
   border-radius: var(--radius-sm); padding: 11px 14px;
@@ -197,7 +243,7 @@ code {
   transition: border-color .15s;
 }
 .name-card select:focus { outline: none; border-color: var(--accent); }
-.name-card select option { background: #1e1e1e; }
+.name-card select option { background: var(--surface); color: var(--text); }
 
 /* ── Session input page ── */
 .page-title { font-size: 18px; font-weight: 700; letter-spacing: -0.03em; color: var(--text); margin-bottom: 4px; }
@@ -306,10 +352,10 @@ code {
 .ov-speaker { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
 .ov-attendees { display: flex; flex-wrap: wrap; gap: 5px; min-height: 22px; }
 .ov-chip { display: inline-flex; align-items: center; background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(77,159,255,0.25); font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 99px; }
-.ov-empty { font-size: 11px; color: #444; font-style: italic; }
+.ov-empty { font-size: 11px; color: var(--muted); font-style: italic; }
 .empty-state { text-align: center; padding: 56px 24px; color: var(--muted); font-size: 13px; line-height: 1.9; }
 .loader { text-align: center; padding: 48px; color: var(--muted); font-size: 12px; }
-.empty-label { font-size: 12px; color: #555; font-style: italic; }
+.empty-label { font-size: 12px; color: var(--muted); font-style: italic; }
 
 /* ── Error box ── */
 .error-box {
@@ -318,6 +364,125 @@ code {
   font-size: 12px; color: #ff9999; line-height: 1.7; margin-top: 10px;
 }
 .error-box strong { color: var(--error); }
+
+/* ── 노트 모달 ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.on { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius); width: 100%; max-width: 560px;
+  max-height: 90vh; overflow-y: auto; padding: 24px;
+}
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.modal-title { font-size: 15px; font-weight: 600; line-height: 1.5; letter-spacing: -0.02em; }
+.modal-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 20px; padding: 0; flex-shrink: 0; line-height: 1; }
+.modal-close:hover { color: var(--text); }
+.note-tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+.note-tab { font-size: 12px; padding: 5px 12px; border-radius: 99px; border: 1px solid var(--border2); background: none; color: var(--muted); cursor: pointer; font-family: inherit; transition: all .12s; }
+.note-tab.on { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+.note-view { display: none; }
+.note-view.on { display: block; }
+.note-field { margin-bottom: 16px; }
+.note-field label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.note-field textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border2);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm); padding: 10px 12px;
+  font-size: 13px; font-family: inherit; color: var(--text);
+  resize: vertical; min-height: 100px; line-height: 1.6;
+  transition: border-color .15s;
+}
+.note-field textarea:focus { outline: none; border-color: var(--accent); }
+.note-field textarea::placeholder { color: var(--muted); }
+.wysiwyg-editor {
+  width: 100%; background: var(--bg); border: 1px solid var(--border2);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm); padding: 10px 12px;
+  font-size: 13px; font-family: inherit; color: var(--text);
+  min-height: 100px; line-height: 1.7; outline: none;
+  transition: border-color .15s;
+}
+.wysiwyg-editor:focus { border-color: var(--accent); }
+.wysiwyg-editor:empty:before { content: attr(data-placeholder); color: var(--muted); pointer-events: none; }
+.wysiwyg-editor h1 { font-size:16px; font-weight:700; margin:4px 0; }
+.wysiwyg-editor h2 { font-size:14px; font-weight:600; margin:4px 0; }
+.wysiwyg-editor strong { font-weight:700; }
+.wysiwyg-editor em { font-style:italic; }
+.wysiwyg-editor del { text-decoration:line-through; }
+.wysiwyg-editor ul,.wysiwyg-editor ol { padding-left:18px; margin:4px 0; }
+.wysiwyg-editor li { margin-bottom:2px; }
+.wysiwyg-editor blockquote { border-left:3px solid var(--accent); padding-left:8px; color:var(--muted2); margin:4px 0; }
+body.light .wysiwyg-editor { background:#ffffff; color:#1a1916; }
+.md-toolbar {
+  display: flex; gap: 2px; flex-wrap: wrap; align-items: center;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-bottom: none; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  padding: 5px 8px;
+}
+.md-btn {
+  background: none; border: none; color: var(--muted2);
+  cursor: pointer; font-size: 12px; font-family: inherit;
+  padding: 3px 7px; border-radius: 4px;
+  transition: background .12s, color .12s;
+  line-height: 1.4;
+}
+.md-btn:hover { background: var(--border); color: var(--text); }
+.md-sep { width: 1px; height: 14px; background: var(--border2); margin: 0 3px; }
+.md-preview-toggle { display: flex; gap: 2px; margin-left: auto; }
+.md-ptab { background: none; border: 1px solid transparent; color: var(--muted); cursor: pointer; font-size: 11px; font-family: inherit; padding: 2px 8px; border-radius: 99px; transition: all .12s; }
+.md-ptab.on { border-color: var(--border2); color: var(--text); background: var(--bg); }
+.md-preview {
+  display: none; width: 100%; min-height: 100px;
+  background: var(--bg); border: 1px solid var(--border2);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  padding: 10px 12px; font-size: 13px; line-height: 1.8; color: var(--text);
+}
+.md-preview.on { display: block; }
+.md-preview h1 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.md-preview h2 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.md-preview h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.md-preview strong { font-weight: 700; }
+.md-preview em { font-style: italic; }
+.md-preview ul { padding-left: 18px; margin: 6px 0; }
+.md-preview ol { padding-left: 18px; margin: 6px 0; }
+.md-preview li { margin-bottom: 3px; }
+.md-preview blockquote { border-left: 3px solid var(--accent); padding-left: 10px; color: var(--muted2); margin: 6px 0; }
+.md-preview code { background: var(--surface2); padding: 1px 5px; border-radius: 3px; font-family: monospace; font-size: 12px; }
+.md-preview hr { border: none; border-top: 1px solid var(--border2); margin: 10px 0; }
+.md-preview p { margin-bottom: 6px; }
+.emoji-picker { position: relative; display: inline-block; }
+.emoji-list {
+  display: none; position: absolute; top: 100%; left: 0; z-index: 100;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 8px;
+  display: none; flex-wrap: wrap; gap: 3px; width: 200px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.emoji-list.on { display: flex; }
+.emoji-item { cursor: pointer; font-size: 18px; padding: 3px; border-radius: 4px; transition: background .1s; }
+.emoji-item:hover { background: var(--surface2); }
+.note-readonly { font-size: 13px; color: var(--muted2); line-height: 1.7; white-space: pre-wrap; min-height: 40px; }
+.note-empty { font-size: 12px; color: var(--muted); font-style: italic; }
+.note-btn-row { display: flex; gap: 8px; margin-top: 4px; }
+.note-author { font-size: 11px; color: var(--muted); margin-top: 12px; }
+.note-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; }
+.note-card-author { font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 10px; }
+.note-card-section { margin-bottom: 10px; }
+.note-card-section:last-child { margin-bottom: 0; }
+.note-card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.note-card-text { font-size: 12px; color: var(--muted2); line-height: 1.7; }
+.note-card-text h1,.note-card-text h2,.note-card-text h3 { font-weight:600; margin-bottom:4px; }
+.note-card-text strong { font-weight:700; }
+.note-card-text em { font-style:italic; }
+.note-card-text ul,.note-card-text ol { padding-left:16px; margin:4px 0; }
+.note-card-text li { margin-bottom:2px; }
+.note-card-text blockquote { border-left:3px solid var(--accent); padding-left:8px; color:var(--muted); margin:4px 0; }
+.note-card-text code { background:var(--surface2); padding:1px 4px; border-radius:3px; font-family:monospace; font-size:11px; }
+.note-card-text p { margin-bottom:4px; }
+.ov-note-btn { font-size: 11px; padding: 4px 10px; margin-top: 8px; width: 100%; text-align: center; }
 </style>
 </head>
 <body>
@@ -330,6 +495,7 @@ code {
     <div class="avatar" id="h-avatar"></div>
     <span class="header-name" id="h-name"></span>
   </div>
+  <button id="theme-btn" onclick="toggleTheme()" style="margin-left:8px; background:none; border:1px solid var(--border2); border-radius:99px; padding:4px 10px; cursor:pointer; font-size:13px; color:var(--muted2);">☀️</button>
 </header>
 
 <main>
@@ -382,8 +548,11 @@ code {
         <option>조승호</option>
       </select>
       <div class="btn-row" style="margin-top:12px;">
-        <button class="btn ghost" style="flex:1;" onclick="goAdmin()">팀 현황 보기</button>
         <button class="btn pri" style="flex:1;" id="go-input-btn" onclick="goInput()">세션 선택하기 →</button>
+      </div>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn ghost" style="flex:1;" onclick="goAdmin()">👥 팀 현황 보기</button>
+        <button class="btn ghost" style="flex:1;" onclick="goNotes()">📝 세션 노트 보기</button>
       </div>
     </div>
     <p style="text-align:center; margin-top:16px;">
@@ -415,7 +584,34 @@ code {
   <div id="admin-content"><div class="loader">불러오는 중…</div></div>
 </div>
 
+<!-- ⑤ 세션 노트 -->
+<div id="pg-notes" class="page">
+  <div class="admin-header">
+    <button class="back-btn" onclick="showPage('pg-landing')" style="margin:0;">← 뒤로</button>
+    <span class="page-title" style="margin:0;">세션 노트</span>
+    <button class="btn sm ghost" onclick="loadNotes()" style="margin-left:auto;">↻ 새로고침</button>
+  </div>
+  <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">세션을 클릭해서 노트를 작성하거나 팀원들의 노트를 확인하세요.</p>
+  <div id="notes-content"><div class="loader">불러오는 중…</div></div>
+</div>
+
 </main>
+
+<!-- 노트 모달 -->
+<div class="modal-overlay" id="note-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-session-title"></div>
+        <div class="modal-sub" id="modal-session-sub"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <!-- 탭: 내 노트 | 팀 노트 -->
+    <div class="note-tabs" id="note-tabs"></div>
+    <div id="note-views"></div>
+  </div>
+</div>
 
 <script>
 /* ── 세션 데이터 ── */
@@ -557,6 +753,9 @@ function handle(e){
     if(a==='save'){r=save(p.name,JSON.parse(p.checks));updateSummary();}
     else if(a==='load')r=load(p.name);
     else if(a==='all')r=all();
+    else if(a==='saveNote')r=saveNote(p.name,parseInt(p.idx),p.summary||'',p.insight||'',p.idea||'');
+    else if(a==='getNotes')r=getNotes();
+    else if(a==='deleteNote')r=deleteNote(p.name,parseInt(p.idx));
     else r={ok:false,error:'unknown action'};
   }catch(err){r={ok:false,error:err.toString()};}
   const json=JSON.stringify(r);
@@ -585,6 +784,41 @@ function all(){
   const s=sheet(),d=s.getDataRange().getValues(),p=[];
   for(let i=1;i<d.length;i++){if(d[i][0])p.push({name:d[i][0],checks:JSON.parse(d[i][1]||'{}'),updatedAt:d[i][2]});}
   return{ok:true,people:p};
+}
+function noteSheet(){
+  const ss=SpreadsheetApp.getActiveSpreadsheet();
+  let s=ss.getSheetByName('노트');
+  if(!s){s=ss.insertSheet('노트');s.appendRow(['sessionIdx','name','summary','insight','idea','updatedAt']);s.setFrozenRows(1);}
+  return s;
+}
+function saveNote(name,idx,summary,insight,idea){
+  const s=noteSheet(),d=s.getDataRange().getValues(),now=new Date().toISOString();
+  for(let i=1;i<d.length;i++){
+    if(d[i][0]===idx&&d[i][1]===name){
+      s.getRange(i+1,3,1,4).setValues([[summary,insight,idea,now]]);
+      return{ok:true};
+    }
+  }
+  s.appendRow([idx,name,summary,insight,idea,now]);
+  return{ok:true};
+}
+function getNotes(){
+  const s=noteSheet(),d=s.getDataRange().getValues();
+  const notes={};
+  for(let i=1;i<d.length;i++){
+    if(!d[i][1])continue;
+    const idx=d[i][0];
+    if(!notes[idx])notes[idx]=[];
+    notes[idx].push({name:d[i][1],summary:d[i][2],insight:d[i][3],idea:d[i][4],updatedAt:d[i][5]});
+  }
+  return{ok:true,notes};
+}
+function deleteNote(name,idx){
+  const s=noteSheet(),d=s.getDataRange().getValues();
+  for(let i=1;i<d.length;i++){
+    if(d[i][0]===idx&&d[i][1]===name){s.deleteRow(i+1);return{ok:true};}
+  }
+  return{ok:true};
 }
 function updateSummary(){
   const ss=SpreadsheetApp.getActiveSpreadsheet();
@@ -914,7 +1148,329 @@ async function loadAdmin() {
   }
 }
 
+/* ── 마크다운 파서 ── */
+/* ── WYSIWYG 에디터 ── */
+function parseMarkdown(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/~~(.+?)~~/g,'<del>$1</del>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/\n/g,'<br>');
+}
+
+function htmlToText(html) {
+  // contenteditable html → plain text for storage
+  return html
+    .replace(/<br\s*\/?>/gi,'\n')
+    .replace(/<div>/gi,'\n').replace(/<\/div>/gi,'')
+    .replace(/<p>/gi,'').replace(/<\/p>/gi,'\n')
+    .replace(/<b>|<strong>/gi,'**').replace(/<\/b>|<\/strong>/gi,'**')
+    .replace(/<i>|<em>/gi,'*').replace(/<\/i>|<\/em>/gi,'*')
+    .replace(/<s>|<del>/gi,'~~').replace(/<\/s>|<\/del>/gi,'~~')
+    .replace(/<h1>/gi,'# ').replace(/<\/h1>/gi,'')
+    .replace(/<h2>/gi,'## ').replace(/<\/h2>/gi,'')
+    .replace(/<li>/gi,'- ').replace(/<\/li>/gi,'')
+    .replace(/<ul>|<\/ul>|<ol>|<\/ol>/gi,'')
+    .replace(/<blockquote>/gi,'> ').replace(/<\/blockquote>/gi,'')
+    .replace(/<[^>]+>/g,'')
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+}
+
+function mdField(id, placeholder) {
+  const EMOJIS = ['😊','🎉','👍','💡','🚀','📋','✅','❗','🔥','💪','🤔','📌','⭐','🙌','👏','💬','📝','🎯','💎','🌟',
+    '😄','😍','🤩','😎','🥳','😅','😂','🙏','👌','✨','🔑','💼','📊','🗒️','🔍','📣','🎤','🎓','🏆','💰'];
+  return `
+    <div class="md-toolbar">
+      <button class="md-btn" onmousedown="event.preventDefault();document.execCommand('bold')" title="굵게"><b>B</b></button>
+      <button class="md-btn" onmousedown="event.preventDefault();document.execCommand('italic')" title="기울임"><i>I</i></button>
+      <button class="md-btn" onmousedown="event.preventDefault();document.execCommand('strikeThrough')" title="취소선"><s>S</s></button>
+      <div class="md-sep"></div>
+      <button class="md-btn" onmousedown="event.preventDefault();wrapBlock('${id}','h1')" title="제목1">H1</button>
+      <button class="md-btn" onmousedown="event.preventDefault();wrapBlock('${id}','h2')" title="제목2">H2</button>
+      <div class="md-sep"></div>
+      <button class="md-btn" onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')" title="목록">≡</button>
+      <button class="md-btn" onmousedown="event.preventDefault();document.execCommand('insertOrderedList')" title="번호목록">1.</button>
+      <div class="md-sep"></div>
+      <div class="emoji-picker">
+        <button class="md-btn" onmousedown="event.preventDefault();toggleEmoji('${id}')" title="이모티콘">😊</button>
+        <div class="emoji-list" id="emoji-${id}">
+          ${EMOJIS.map(e=>`<span class="emoji-item" onmousedown="event.preventDefault();insertEmoji('${id}','${e}')">${e}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="wysiwyg-editor" id="${id}" contenteditable="true" data-placeholder="${placeholder}"></div>`;
+}
+
+function wrapBlock(id, tag) {
+  document.getElementById(id).focus();
+  document.execCommand('formatBlock', false, tag);
+}
+
+function insertEmoji(id, emoji) {
+  const el = document.getElementById(id);
+  el.focus();
+  document.execCommand('insertText', false, emoji);
+  closeEmoji(id);
+}
+
+function toggleEmoji(id) {
+  document.getElementById('emoji-'+id).classList.toggle('on');
+}
+function closeEmoji(id) {
+  document.getElementById('emoji-'+id).classList.remove('on');
+}
+
+function getEditorValue(id) {
+  const el = document.getElementById(id);
+  return el ? htmlToText(el.innerHTML) : '';
+}
+function setEditorValue(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = text ? parseMarkdown(text) : '';
+}
+
+
+/* ── 세션 노트 ── */
+let allNotes = {}; // { sessionIdx: [ {name, summary, insight, idea, updatedAt} ] }
+let currentModalIdx = null;
+
+function goNotes() {
+  showPage('pg-notes');
+  loadNotes();
+}
+
+async function loadNotes() {
+  const cont = document.getElementById('notes-content');
+  cont.innerHTML = '<div class="loader">불러오는 중…</div>';
+  try {
+    const r = await apiCall({ action: 'getNotes' });
+    if (r.ok) allNotes = r.notes || {};
+  } catch(e) {
+    allNotes = {};
+  }
+  renderNotesGrid();
+}
+
+function renderNotesGrid() {
+  const cont = document.getElementById('notes-content');
+  let html = '';
+  let globalIdx = 0;
+  SLOTS.forEach(slot => {
+    html += `<div class="ov-slot">
+      <div class="ov-slot-header">
+        <span class="ov-slot-time">${slot.time}</span>
+        <div class="ov-slot-line"></div>
+      </div>`;
+    if (slot.special) {
+      html += `<div class="ov-special">${slot.label}</div>`;
+    } else {
+      html += `<div class="ov-grid">`;
+      slot.sessions.forEach(s => {
+        const idx = globalIdx++;
+        const cls = TRACK_CLS[s.track] || '';
+        const notes = allNotes[idx] || [];
+        const cnt = notes.length;
+        html += `<div class="ov-card" style="cursor:pointer;" onclick="openModal(${idx})">
+          <span class="track-pill ${cls}" style="margin-bottom:8px;">${s.track}</span>
+          <div class="ov-title">${s.title}</div>
+          <div class="ov-speaker">${s.speaker}</div>
+          <div style="font-size:10px; color:var(--muted); margin-top:4px; margin-bottom:10px;">📍 ${TRACK_VENUE[s.track]||''}</div>
+          <div style="font-size:11px; color:${cnt>0?'var(--accent)':'#555'};">
+            ${cnt > 0 ? `📝 노트 ${cnt}개` : '📝 노트 없음'}
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
+  cont.innerHTML = html;
+}
+
+function openModal(idx) {
+  currentModalIdx = idx;
+  const s = ALL_SESSIONS[idx];
+  const slot = SLOTS[s.slotIdx];
+  document.getElementById('modal-session-title').textContent = s.title;
+  document.getElementById('modal-session-sub').textContent = `${s.speaker} · ${slot.time} · ${TRACK_VENUE[s.track]||''}`;
+
+  const notes = allNotes[idx] || [];
+  const myNote = notes.find(n => n.name === currentName) || {};
+  const tabsEl = document.getElementById('note-tabs');
+  const viewsEl = document.getElementById('note-views');
+
+  // ── 탭 1: 통합 보기 ──
+  let tabsHtml = `<button class="note-tab on" onclick="switchNoteTab('nv-unified', this)">통합 보기</button>`;
+
+  const sections = [
+    { key:'summary', label:'📋 주요 내용 및 사례' },
+    { key:'insight', label:'💡 핵심 인사이트' },
+    { key:'idea',    label:'🚀 적용 아이디어' },
+  ];
+  let unifiedHtml = `<div class="note-view on" id="nv-unified">`;
+  if (notes.length === 0) {
+    unifiedHtml += `<p style="font-size:13px; color:var(--muted); padding:20px 0; text-align:center;">아직 작성된 노트가 없어요.</p>`;
+  } else {
+    sections.forEach(sec => {
+      const entries = notes.filter(n => n[sec.key] && n[sec.key].trim());
+      if (entries.length === 0) return;
+      unifiedHtml += `<div class="note-card-section" style="margin-bottom:16px;">
+        <div class="note-card-label" style="margin-bottom:8px;">${sec.label}</div>`;
+      entries.forEach(n => {
+        unifiedHtml += `<div style="margin-bottom:8px; padding:10px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm);">
+          <div style="font-size:10px; font-weight:600; color:var(--accent); margin-bottom:5px;">${n.name}</div>
+          <div class="note-card-text">${parseMarkdown(n[sec.key])}</div>
+        </div>`;
+      });
+      unifiedHtml += `</div>`;
+    });
+  }
+  unifiedHtml += `</div>`;
+
+  // ── 탭 2~N: 팀원별 개별 노트 ──
+  let individualHtml = '';
+  notes.forEach(n => {
+    const tid = 'nv-p-' + n.name;
+    tabsHtml += `<button class="note-tab" onclick="switchNoteTab('${tid}', this)">${n.name}</button>`;
+    individualHtml += `<div class="note-view" id="${tid}">
+      <div class="note-card">
+        <div class="note-card-author">${n.name}</div>
+        ${sections.map(sec => `
+        <div class="note-card-section">
+          <div class="note-card-label">${sec.label}</div>
+          <div class="note-card-text">${n[sec.key] ? parseMarkdown(n[sec.key]) : '<span class="note-empty">없음</span>'}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  });
+
+  // ── 탭 마지막: 내 노트 작성 ──
+  tabsHtml += `<button class="note-tab" onclick="switchNoteTab('nv-write', this)">✏️ 내 노트</button>`;
+  const writeHtml = `<div class="note-view" id="nv-write">
+    ${currentName ? `
+    <div class="note-field">
+      <label>📋 주요 내용 및 사례</label>
+      ${mdField('note-summary','클로바노트 요약을 붙여넣거나 직접 입력해요')}
+    </div>
+    <div class="note-field">
+      <label>💡 핵심 인사이트</label>
+      ${mdField('note-insight','가장 인상 깊었던 내용을 적어요')}
+    </div>
+    <div class="note-field">
+      <label>🚀 적용 아이디어</label>
+      ${mdField('note-idea','우리 팀에 적용할 수 있는 아이디어를 적어요')}
+    </div>
+    <div class="note-btn-row" style="margin-top:8px;">
+      <button class="btn pri sm" onclick="saveNote(${idx})">저장하기</button>
+      ${myNote.summary||myNote.insight||myNote.idea ? `<button class="btn sm" style="border-color:var(--error); color:var(--error);" onclick="deleteNote(${idx})">삭제</button>` : ''}
+      <span class="status" id="note-save-st"></span>
+    </div>
+    ` : `
+    <p style="font-size:13px; color:var(--muted); margin-bottom:14px;">노트를 작성하려면 이름을 선택해 주세요.</p>
+    <select onchange="currentName=this.value;" style="width:100%; background:var(--bg); border:1px solid var(--border2); border-radius:var(--radius-sm); padding:10px 12px; font-size:13px; font-family:inherit; color:var(--text);">
+      <option value="">이름 선택</option>
+      <option>김유희</option><option>나혜연</option><option>구기중</option>
+      <option>박수인</option><option>박예림</option><option>조승호</option>
+    </select>
+    <p style="font-size:11px; color:var(--muted); margin-top:8px;">선택 후 모달을 닫고 다시 열어주세요.</p>
+    `}
+  </div>`;
+
+  tabsEl.innerHTML = tabsHtml;
+  viewsEl.innerHTML = unifiedHtml + individualHtml + writeHtml;
+  // 기존 노트 값 세팅
+  if (currentName && myNote) {
+    setTimeout(() => {
+      ['summary','insight','idea'].forEach(k => {
+        if (myNote[k]) setEditorValue('note-'+k, myNote[k]);
+      });
+    }, 0);
+  }
+  document.getElementById('note-modal').classList.add('on');
+}
+
+function switchNoteTab(id, btn) {
+  document.querySelectorAll('.note-tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.note-view').forEach(v => v.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById(id).classList.add('on');
+}
+
+function closeModal() {
+  document.getElementById('note-modal').classList.remove('on');
+  currentModalIdx = null;
+}
+
+async function saveNote(idx) {
+  const st = document.getElementById('note-save-st');
+  if (!currentName) { alert('이름을 선택해 주세요.'); return; }
+  const summary = getEditorValue('note-summary');
+  const insight = getEditorValue('note-insight');
+  const idea    = getEditorValue('note-idea');
+  st.textContent = '저장 중…'; st.className = 'status';
+  try {
+    const r = await apiCall({ action:'saveNote', name:currentName, idx, summary, insight, idea });
+    if (r.ok) {
+      st.textContent = '✓ 저장되었습니다!'; st.className = 'status ok';
+      if (!allNotes[idx]) allNotes[idx] = [];
+      const existing = allNotes[idx].findIndex(n => n.name === currentName);
+      const entry = { name:currentName, summary, insight, idea };
+      if (existing >= 0) allNotes[idx][existing] = entry;
+      else allNotes[idx].push(entry);
+    } else throw new Error(r.error);
+  } catch(e) {
+    st.textContent = '저장 실패'; st.className = 'status err';
+  }
+}
+
+async function deleteNote(idx) {
+  if (!currentName) return;
+  if (!confirm('내 노트를 삭제할까요?')) return;
+  const st = document.getElementById('note-save-st');
+  st.textContent = '삭제 중…'; st.className = 'status';
+  try {
+    const r = await apiCall({ action:'deleteNote', name:currentName, idx });
+    if (r.ok) {
+      st.textContent = '삭제되었습니다.'; st.className = 'status ok';
+      if (allNotes[idx]) allNotes[idx] = allNotes[idx].filter(n => n.name !== currentName);
+      ['summary','insight','idea'].forEach(k => {
+        const el = document.getElementById('note-'+k);
+        if (el) el.innerHTML = '';
+      });
+    } else throw new Error(r.error);
+  } catch(e) {
+    st.textContent = '삭제 실패'; st.className = 'status err';
+  }
+}
+
+// 모달 외부 클릭시 닫기
+document.getElementById('note-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+  localStorage.setItem('hrday_theme', isLight ? 'light' : 'dark');
+}
+
+function applyTheme() {
+  const saved = localStorage.getItem('hrday_theme');
+  if (saved === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('theme-btn').textContent = '🌙';
+  }
+}
+
 init();
+applyTheme();
 </script>
 </body>
 </html>
