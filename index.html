@@ -1205,7 +1205,7 @@ function mdField(id, placeholder) {
         </div>
       </div>
     </div>
-    <div class="wysiwyg-editor" id="${id}" contenteditable="true" data-placeholder="${placeholder}"></div>`;
+    <div class="wysiwyg-editor" id="${id}" contenteditable="true" data-placeholder="${placeholder}" oninput="if(typeof currentModalIdx!=='undefined'&&currentModalIdx!==null)clearTimeout(window._asTimer);window._asTimer=setTimeout(()=>autosave(currentModalIdx),1500)"></div>`;
 }
 
 function wrapBlock(id, tag) {
@@ -1235,6 +1235,24 @@ function setEditorValue(id, text) {
   const el = document.getElementById(id);
   if (el) el.innerHTML = text ? parseMarkdown(text) : '';
 }
+
+/* ── 임시 저장 ── */
+function autoSaveKey(idx) { return `hrday_draft_${idx}_${currentName}`; }
+function autosave(idx) {
+  const draft = {
+    summary: getEditorValue('note-summary'),
+    insight: getEditorValue('note-insight'),
+    idea:    getEditorValue('note-idea'),
+    savedAt: new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})
+  };
+  localStorage.setItem(autoSaveKey(idx), JSON.stringify(draft));
+  const el = document.getElementById('autosave-st');
+  if (el) { el.textContent = `임시저장 ${draft.savedAt}`; el.style.opacity = 1; setTimeout(()=>{ el.style.opacity = 0.4; }, 2000); }
+}
+function loadDraft(idx) {
+  try { return JSON.parse(localStorage.getItem(autoSaveKey(idx))); } catch(e) { return null; }
+}
+function clearDraft(idx) { localStorage.removeItem(autoSaveKey(idx)); }
 
 
 /* ── 세션 노트 ── */
@@ -1357,7 +1375,7 @@ function openModal(idx) {
     ${currentName ? `
     <div class="note-field">
       <label>📋 주요 내용 및 사례</label>
-      ${mdField('note-summary','클로바노트 요약을 붙여넣거나 직접 입력해요')}
+      ${mdField('note-summary','세션의 주요 내용과 사례를 적어요')}
     </div>
     <div class="note-field">
       <label>💡 핵심 인사이트</label>
@@ -1371,6 +1389,7 @@ function openModal(idx) {
       <button class="btn pri sm" onclick="saveNote(${idx})">저장하기</button>
       ${myNote.summary||myNote.insight||myNote.idea ? `<button class="btn sm" style="border-color:var(--error); color:var(--error);" onclick="deleteNote(${idx})">삭제</button>` : ''}
       <span class="status" id="note-save-st"></span>
+      <span id="autosave-st" style="font-size:11px; color:var(--muted); margin-left:auto; opacity:0.4; transition:opacity .3s;"></span>
     </div>
     ` : `
     <p style="font-size:13px; color:var(--muted); margin-bottom:14px;">노트를 작성하려면 이름을 선택해 주세요.</p>
@@ -1385,13 +1404,23 @@ function openModal(idx) {
 
   tabsEl.innerHTML = tabsHtml;
   viewsEl.innerHTML = unifiedHtml + individualHtml + writeHtml;
-  // 기존 노트 값 세팅
-  if (currentName && myNote) {
-    setTimeout(() => {
-      ['summary','insight','idea'].forEach(k => {
-        if (myNote[k]) setEditorValue('note-'+k, myNote[k]);
-      });
-    }, 0);
+  // 기존 노트 또는 임시저장 값 세팅
+  if (currentName) {
+    const restoreFn = () => {
+      const draft = loadDraft(idx);
+      const source = draft || (myNote.summary || myNote.insight || myNote.idea ? myNote : null);
+      if (source) {
+        ['summary','insight','idea'].forEach(k => {
+          if (source[k]) setEditorValue('note-'+k, source[k]);
+        });
+        if (draft) {
+          const el = document.getElementById('autosave-st');
+          if (el) { el.textContent = `임시저장 복원됨 (${draft.savedAt})`; el.style.opacity = 1; }
+        }
+      }
+    };
+    // rAF 두 번으로 DOM 완전히 렌더된 후 실행
+    requestAnimationFrame(() => requestAnimationFrame(restoreFn));
   }
   document.getElementById('note-modal').classList.add('on');
 }
@@ -1419,6 +1448,9 @@ async function saveNote(idx) {
     const r = await apiCall({ action:'saveNote', name:currentName, idx, summary, insight, idea });
     if (r.ok) {
       st.textContent = '✓ 저장되었습니다!'; st.className = 'status ok';
+      clearDraft(idx);
+      const ast = document.getElementById('autosave-st');
+      if (ast) ast.textContent = '';
       if (!allNotes[idx]) allNotes[idx] = [];
       const existing = allNotes[idx].findIndex(n => n.name === currentName);
       const entry = { name:currentName, summary, insight, idea };
