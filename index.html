@@ -1090,8 +1090,12 @@ async function loadAdmin() {
   const cont = document.getElementById('admin-content');
   cont.innerHTML = '<div class="loader">불러오는 중…</div>';
   try {
-    const r = await apiCall({ action: 'all' });
+    const [r, rn] = await Promise.all([
+      apiCall({ action: 'all' }),
+      apiCall({ action: 'getNotes' }).catch(() => ({ ok: false }))
+    ]);
     if (!r.ok) throw new Error(r.error);
+    if (rn.ok) allNotes = rn.notes || {};
     const people = r.people || [];
     if (people.length === 0) {
       cont.innerHTML = `<div class="empty-state">아직 등록된 팀원이 없어요.<br>팀원들이 세션을 선택하고 저장하면 여기에 나타나요.</div>`;
@@ -1127,12 +1131,14 @@ async function loadAdmin() {
           const chipsHtml = names.length
             ? names.map(n => `<span class="ov-chip">${n}</span>`).join('')
             : `<span class="ov-empty">없음</span>`;
+          const noteCnt = (allNotes[idx] || []).length;
           html += `<div class="ov-card">
             <span class="track-pill ${cls}" style="margin-bottom:8px;">${s.track}</span>
             <div class="ov-title">${s.title}</div>
             <div class="ov-speaker">${s.speaker}</div>
             <div style="font-size:10px; color:var(--muted); margin-bottom:8px;">📍 ${TRACK_VENUE[s.track]||''}</div>
             <div class="ov-attendees">${chipsHtml}</div>
+            ${noteCnt > 0 ? `<div style="font-size:11px; color:var(--accent); margin-top:8px;">📝 노트 ${noteCnt}개</div>` : ''}
           </div>`;
         });
         html += `</div>`;
@@ -1264,12 +1270,27 @@ function goNotes() {
   loadNotes();
 }
 
+let notesAttendeeMap = {};
 async function loadNotes() {
   const cont = document.getElementById('notes-content');
   cont.innerHTML = '<div class="loader">불러오는 중…</div>';
   try {
-    const r = await apiCall({ action: 'getNotes' });
-    if (r.ok) allNotes = r.notes || {};
+    const [rn, ra] = await Promise.all([
+      apiCall({ action: 'getNotes' }).catch(() => ({ ok: false })),
+      apiCall({ action: 'all' }).catch(() => ({ ok: false }))
+    ]);
+    if (rn.ok) allNotes = rn.notes || {};
+    if (ra.ok) {
+      notesAttendeeMap = {};
+      (ra.people || []).forEach(person => {
+        ALL_SESSIONS.forEach(s => {
+          if (person.checks && person.checks[s.idx]) {
+            if (!notesAttendeeMap[s.idx]) notesAttendeeMap[s.idx] = [];
+            notesAttendeeMap[s.idx].push(person.name);
+          }
+        });
+      });
+    }
   } catch(e) {
     allNotes = {};
   }
@@ -1295,12 +1316,17 @@ function renderNotesGrid() {
         const cls = TRACK_CLS[s.track] || '';
         const notes = allNotes[idx] || [];
         const cnt = notes.length;
+        const attendees = notesAttendeeMap[idx] || [];
+        const attendeeChips = attendees.length
+          ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">${attendees.map(n=>`<span class="ov-chip">${n}</span>`).join('')}</div>`
+          : `<div style="font-size:11px;color:#555;margin-bottom:8px;">참석자 없음</div>`;
         html += `<div class="ov-card" style="cursor:pointer;" onclick="openModal(${idx})">
           <span class="track-pill ${cls}" style="margin-bottom:8px;">${s.track}</span>
           <div class="ov-title">${s.title}</div>
           <div class="ov-speaker">${s.speaker}</div>
-          <div style="font-size:10px; color:var(--muted); margin-top:4px; margin-bottom:10px;">📍 ${TRACK_VENUE[s.track]||''}</div>
-          <div style="font-size:11px; color:${cnt>0?'var(--accent)':'#555'};">
+          <div style="font-size:10px; color:var(--muted); margin-top:4px; margin-bottom:8px;">📍 ${TRACK_VENUE[s.track]||''}</div>
+          ${attendeeChips}
+          <div style="font-size:11px; color:${cnt>0?'var(--accent)':'var(--muted)'};">
             ${cnt > 0 ? `📝 노트 ${cnt}개` : '📝 노트 없음'}
           </div>
         </div>`;
