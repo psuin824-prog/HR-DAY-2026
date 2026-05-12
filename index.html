@@ -907,9 +907,9 @@ function jsonpCall(params, attempt) {
     const timeout = setTimeout(() => {
       delete window[cbName];
       document.getElementById(cbName)?.remove();
-      if (attempt < 3) resolve(jsonpCall(params, attempt + 1));
+      if (attempt < 5) resolve(jsonpCall(params, attempt + 1));
       else reject(new Error('timeout'));
-    }, 90000);
+    }, 30000);
 
     window[cbName] = (data) => {
       clearTimeout(timeout);
@@ -926,7 +926,7 @@ function jsonpCall(params, attempt) {
       clearTimeout(timeout);
       delete window[cbName];
       script.remove();
-      if (attempt < 3) resolve(jsonpCall(params, attempt + 1));
+      if (attempt < 5) resolve(jsonpCall(params, attempt + 1));
       else reject(new Error('script load failed'));
     };
     document.head.appendChild(script);
