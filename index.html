@@ -900,21 +900,83 @@ function copyScript(btn) {
 /* ── API 호출 (fetch 우선, JSONP 폴백) ── */
 async function apiCall(params, attempt) {
   attempt = attempt || 1;
-  const qs = new URLSearchParams(params).toString();
-  const url = SCRIPT_URL + '?' + qs;
+  const isWrite = ['save','saveNote','deleteNote'].includes(params.action);
 
-  // fetch 먼저 시도
-  try {
-    const res = await Promise.race([
-      fetch(url, { mode: 'cors' }),
-      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 20000))
-    ]);
-    const data = await res.json();
-    return data;
-  } catch(e) {
-    // fetch 실패시 JSONP로 폴백
-    return jsonpCall(params, attempt);
+  if (isWrite) {
+    // 쓰기는 form POST (CORS 우회, URL 길이 제한 없음)
+    return formPost(params, attempt);
+  } else {
+    // 읽기는 fetch 먼저, 실패시 JSONP
+    const qs = new URLSearchParams(params).toString();
+    const url = SCRIPT_URL + '?' + qs;
+    try {
+      const res = await Promise.race([
+        fetch(url, { mode: 'cors' }),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 20000))
+      ]);
+      return await res.json();
+    } catch(e) {
+      return jsonpCall(params, attempt);
+    }
   }
+}
+
+function formPost(params, attempt) {
+  attempt = attempt || 1;
+  return new Promise((resolve, reject) => {
+    const iframeId = '_iframe_' + Date.now();
+    const formId   = '_form_'   + Date.now();
+    const cbName   = '_cb_'     + Date.now();
+
+    const timeout = setTimeout(() => {
+      cleanup();
+      if (attempt < 3) resolve(formPost(params, attempt + 1));
+      else reject(new Error('timeout'));
+    }, 30000);
+
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[cbName];
+      document.getElementById(iframeId)?.remove();
+      document.getElementById(formId)?.remove();
+    }
+
+    // iframe에 콜백 심기
+    window[cbName] = (data) => { cleanup(); resolve(data); };
+
+    // 숨겨진 iframe
+    const iframe = document.createElement('iframe');
+    iframe.id = iframeId;
+    iframe.name = iframeId;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    // form POST
+    const form = document.createElement('form');
+    form.id = formId;
+    form.method = 'POST';
+    form.action = SCRIPT_URL;
+    form.target = iframeId;
+    form.style.display = 'none';
+
+    const allParams = Object.assign({}, params, { callback: cbName });
+    Object.entries(allParams).forEach(([k, v]) => {
+      const input = document.createElement('input');
+      input.type  = 'hidden';
+      input.name  = k;
+      input.value = v;
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+
+    iframe.onerror = () => {
+      cleanup();
+      if (attempt < 3) resolve(formPost(params, attempt + 1));
+      else reject(new Error('form post failed'));
+    };
+  });
 }
 
 function jsonpCall(params, attempt) {
@@ -923,8 +985,7 @@ function jsonpCall(params, attempt) {
     const cbName = '_cb_' + Date.now();
     const timeout = setTimeout(() => {
       delete window[cbName];
-      const el = document.getElementById(cbName);
-      if (el) el.remove();
+      document.getElementById(cbName)?.remove();
       if (attempt < 3) resolve(jsonpCall(params, attempt + 1));
       else reject(new Error('timeout'));
     }, 30000);
@@ -932,16 +993,14 @@ function jsonpCall(params, attempt) {
     window[cbName] = (data) => {
       clearTimeout(timeout);
       delete window[cbName];
-      const el = document.getElementById(cbName);
-      if (el) el.remove();
+      document.getElementById(cbName)?.remove();
       resolve(data);
     };
 
     const p = Object.assign({}, params, { callback: cbName });
-    const qs = new URLSearchParams(p).toString();
     const script = document.createElement('script');
-    script.id = cbName;
-    script.src = SCRIPT_URL + '?' + qs;
+    script.id  = cbName;
+    script.src = SCRIPT_URL + '?' + new URLSearchParams(p).toString();
     script.onerror = () => {
       clearTimeout(timeout);
       delete window[cbName];
