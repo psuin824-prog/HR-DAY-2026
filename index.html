@@ -743,25 +743,19 @@ const SESSIONS = [
   {time:"17:30~18:20",track:"HR Tech",        title:"바이브 코딩으로 여는 'HRD 메이카' 시대"},
 ];
 
-function doGet(e){return handleWithCors(e)}
-function doPost(e){return handleWithCors(e)}
-function handleWithCors(e){
-  const result = handle(e);
-  return result;
-}
+function doGet(e){return handle(e)}
+function doPost(e){return handle(e)}
 function handle(e){
-  const p = (e.postData ? JSON.parse(e.postData.contents||'{}') : {});
-  const q = e.parameter||{};
-  const params = Object.assign({},q,p);
-  const cb=params.callback, a=params.action;
+  const p=e.parameter||{};
+  const cb=p.callback,a=p.action;
   let r;
   try{
-    if(a==='save'){r=save(params.name,JSON.parse(params.checks));updateSummary();}
-    else if(a==='load')r=load(params.name);
+    if(a==='save'){r=save(p.name,JSON.parse(p.checks));updateSummary();}
+    else if(a==='load')r=load(p.name);
     else if(a==='all')r=all();
-    else if(a==='saveNote')r=saveNote(params.name,parseInt(params.idx),params.summary||'',params.insight||'',params.idea||'');
+    else if(a==='saveNote')r=saveNote(p.name,parseInt(p.idx),p.summary||'',p.insight||'',p.idea||'');
     else if(a==='getNotes')r=getNotes();
-    else if(a==='deleteNote')r=deleteNote(params.name,parseInt(params.idx));
+    else if(a==='deleteNote')r=deleteNote(p.name,parseInt(p.idx));
     else r={ok:false,error:'unknown action'};
   }catch(err){r={ok:false,error:err.toString()};}
   const json=JSON.stringify(r);
@@ -903,39 +897,7 @@ function copyScript(btn) {
 
 /* ── API 호출 (fetch 우선, JSONP 폴백) ── */
 async function apiCall(params, attempt) {
-  attempt = attempt || 1;
-  const isWrite = ['save','saveNote','deleteNote'].includes(params.action);
-
-  if (isWrite) {
-    // 쓰기는 fetch POST + JSON body
-    try {
-      const res = await Promise.race([
-        fetch(SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(params)
-        }),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 90000))
-      ]);
-      return await res.json();
-    } catch(e) {
-      if (attempt < 3) return apiCall(params, attempt + 1);
-      throw e;
-    }
-  } else {
-    // 읽기는 fetch GET 먼저, 실패시 JSONP
-    const qs = new URLSearchParams(params).toString();
-    const url = SCRIPT_URL + '?' + qs;
-    try {
-      const res = await Promise.race([
-        fetch(url, { mode: 'cors' }),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 20000))
-      ]);
-      return await res.json();
-    } catch(e) {
-      return jsonpCall(params, attempt);
-    }
-  }
+  return jsonpCall(params, attempt || 1);
 }
 
 function jsonpCall(params, attempt) {
