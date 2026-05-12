@@ -1294,7 +1294,23 @@ function closeEmoji(id) {
 
 function getEditorValue(id) {
   const el = document.getElementById(id);
-  return el ? htmlToText(el.innerHTML) : '';
+  if (!el) return '';
+  // innerHTML을 plain text로 변환 (HTML 태그 제거, 줄바꿈 보존)
+  let html = el.innerHTML;
+  html = html.replace(/<br\s*\/?>/gi, '\n');
+  html = html.replace(/<div>/gi, '\n').replace(/<\/div>/gi, '');
+  html = html.replace(/<p>/gi, '').replace(/<\/p>/gi, '\n');
+  html = html.replace(/<li>/gi, '- ').replace(/<\/li>/gi, '\n');
+  html = html.replace(/<ul>|<\/ul>|<ol>|<\/ol>/gi, '');
+  html = html.replace(/<h1>/gi, '# ').replace(/<\/h1>/gi, '\n');
+  html = html.replace(/<h2>/gi, '## ').replace(/<\/h2>/gi, '\n');
+  html = html.replace(/<b>|<strong>/gi, '**').replace(/<\/b>|<\/strong>/gi, '**');
+  html = html.replace(/<i>|<em>/gi, '*').replace(/<\/i>|<\/em>/gi, '*');
+  html = html.replace(/<s>|<del>/gi, '~~').replace(/<\/s>|<\/del>/gi, '~~');
+  html = html.replace(/<blockquote>/gi, '> ').replace(/<\/blockquote>/gi, '\n');
+  html = html.replace(/<[^>]+>/g, ''); // 나머지 태그 제거
+  html = html.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ');
+  return html.trim();
 }
 function setEditorValue(id, text) {
   const el = document.getElementById(id);
