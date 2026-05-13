@@ -1353,6 +1353,7 @@ function openModal(idx) {
     { key:'summary', label:'📋 주요 내용 및 사례' },
     { key:'insight', label:'💡 핵심 인사이트' },
     { key:'idea',    label:'🚀 적용 아이디어' },
+    { key:'link',    label:'📎 자료 링크', isLink: true },
   ];
   let unifiedHtml = `<div class="note-view on" id="nv-unified">`;
   if (notes.length === 0) {
@@ -1366,7 +1367,7 @@ function openModal(idx) {
       entries.forEach(n => {
         unifiedHtml += `<div style="margin-bottom:8px; padding:10px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm);">
           <div style="font-size:10px; font-weight:600; color:var(--accent); margin-bottom:5px;">${n.name}</div>
-          <div class="note-card-text">${parseMarkdown(n[sec.key])}</div>
+          <div class="note-card-text">${sec.isLink ? (n[sec.key] ? `<a href="${n[sec.key]}" target="_blank" rel="noopener" style="color:var(--accent);">🔗 자료 열기</a>` : '<span class="note-empty">없음</span>') : parseMarkdown(n[sec.key])}</div>
         </div>`;
       });
       unifiedHtml += `</div>`;
@@ -1385,7 +1386,7 @@ function openModal(idx) {
         ${sections.map(sec => `
         <div class="note-card-section">
           <div class="note-card-label">${sec.label}</div>
-          <div class="note-card-text">${n[sec.key] ? parseMarkdown(n[sec.key]) : '<span class="note-empty">없음</span>'}</div>
+          <div class="note-card-text">${sec.isLink ? (n[sec.key] ? `<a href="${n[sec.key]}" target="_blank" rel="noopener" style="color:var(--accent);">🔗 자료 열기</a>` : '<span class="note-empty">없음</span>') : (n[sec.key] ? parseMarkdown(n[sec.key]) : '<span class="note-empty">없음</span>')}</div>
         </div>`).join('')}
       </div>
     </div>`;
@@ -1406,6 +1407,12 @@ function openModal(idx) {
     <div class="note-field">
       <label>🚀 적용 아이디어</label>
       ${mdField('note-idea','우리 팀에 적용할 수 있는 아이디어를 적어요')}
+    </div>
+    <div class="note-field">
+      <label>📎 자료 링크</label>
+      <input type="url" id="note-link" placeholder="https://..." value="${myNote.link||''}"
+        style="width:100%; background:var(--bg); border:1px solid var(--border2); border-radius:var(--radius-sm); padding:10px 12px; font-size:13px; font-family:inherit; color:var(--text); transition:border-color .15s;"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'" />
     </div>
     <div class="note-btn-row" style="margin-top:8px;">
       <button class="btn pri sm" onclick="saveNote(${idx})">저장하기</button>
@@ -1465,9 +1472,10 @@ async function saveNote(idx) {
   const summary = getEditorValue('note-summary');
   const insight = getEditorValue('note-insight');
   const idea    = getEditorValue('note-idea');
+  const link    = (document.getElementById('note-link')?.value||'').trim();
   st.textContent = '저장 중… (시간이 걸릴 수 있어요)'; st.className = 'status';
   try {
-    const r = await apiCall({ action:'saveNote', name:currentName, idx, summary, insight, idea });
+    const r = await apiCall({ action:'saveNote', name:currentName, idx, summary, insight, idea, link });
     if (r.ok) {
       st.textContent = '✓ 저장되었습니다!'; st.className = 'status ok';
       clearDraft(idx);
@@ -1475,7 +1483,7 @@ async function saveNote(idx) {
       if (ast) ast.textContent = '';
       if (!allNotes[idx]) allNotes[idx] = [];
       const existing = allNotes[idx].findIndex(n => n.name === currentName);
-      const entry = { name:currentName, summary, insight, idea };
+      const entry = { name:currentName, summary, insight, idea, link };
       if (existing >= 0) allNotes[idx][existing] = entry;
       else allNotes[idx].push(entry);
     } else throw new Error(r.error);
